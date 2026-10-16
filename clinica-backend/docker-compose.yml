@@ -1,0 +1,46 @@
+# ============================================================================
+#  Entorno local – Sistema de Gestión Clínica Interdisciplinaria
+#
+#  Solo la base de datos (lo habitual en desarrollo; la API se corre con Maven):
+#      docker compose up -d db
+#
+#  Base de datos + API empaquetada en contenedor:
+#      docker compose --profile full up -d --build
+# ============================================================================
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: clinica-db
+    environment:
+      POSTGRES_DB: clinica
+      POSTGRES_USER: clinica
+      POSTGRES_PASSWORD: clinica
+    ports:
+      # Puerto en el host (5433 por defecto para no chocar con otras instancias de PostgreSQL en 5432).
+      - "${CLINICA_DB_PORT:-5433}:5432"
+    volumes:
+      - clinica-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinica -d clinica"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build: .
+    container_name: clinica-api
+    profiles: ["full"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/clinica
+      DB_USER: clinica
+      DB_PASSWORD: clinica
+      APP_JWT_SECRET: cambiar-este-secreto-en-produccion-por-uno-aleatorio-de-32-bytes
+      APP_CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+    ports:
+      - "8080:8080"
+
+volumes:
+  clinica-pgdata:

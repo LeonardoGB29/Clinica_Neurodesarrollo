@@ -1,0 +1,58 @@
+# ============================================================================
+#  Configuración principal – API Sistema de Gestión Clínica Interdisciplinaria
+#  Los valores sensibles se sobreescriben con variables de entorno.
+# ============================================================================
+spring:
+  application:
+    name: clinica-backend
+  datasource:
+    # 5433 es el puerto que publica docker-compose.yml (CLINICA_DB_PORT) para no chocar con otros PostgreSQL locales.
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/clinica}
+    username: ${DB_USER:clinica}
+    password: ${DB_PASSWORD:clinica}
+  jpa:
+    # Flyway es el dueño del esquema; Hibernate solo valida que las entidades coincidan.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: always
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8080}
+
+app:
+  security:
+    jwt:
+      # Mínimo 32 bytes (HS256). En producción usar APP_JWT_SECRET con un valor aleatorio.
+      secret: ${APP_JWT_SECRET:clinica-san-juan-de-dios-neurodesarrollo-jwt-secreto-desarrollo-2026}
+      expiration-minutes: ${APP_JWT_EXPIRATION_MINUTES:480}
+  cors:
+    # Origen del front (Vite). Separar varios orígenes con coma.
+    allowed-origins: ${APP_CORS_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    pe.sanjuandedios.clinica: INFO
