@@ -121,7 +121,7 @@ y vuelve a ejecutar `.\mvnw.cmd spring-boot:run`.
 | 2. Gestión de objetivos | `components/objectives/ObjectivesPanel.jsx` | Dropdown del banco de la especialidad logueada, creación de objetivo nuevo con **+** (queda guardado en el banco), tarjetas de objetivos activos con línea base y meta editables, límite de 3 por ciclo (validado por la API). |
 | 3. Dashboard de progreso | `components/dashboard/ProgressDashboard.jsx`, `GasScale.jsx`, `CycleChart.jsx` | Anillo de % acumulado por objetivo, última sesión con variación, mini-columnas S1…S12, escala GAS (-2…+2) bloqueada hasta el cierre del ciclo con proyección, gráfico de evolución por sesión (Recharts). Incluye un interruptor para **simular el cierre de ciclo**. |
 | 4. Historial de evolución (cascada) | `components/evolution/EvolutionTimeline.jsx`, `SessionRecord.jsx`, `EvolutionForm.jsx` | Sesiones registradas en solo lectura seguidas del formulario editable de la sesión en curso: aciertos/intentos por objetivo (→ %), Actividad realizada / Evolución, Logro, Observaciones y recomendaciones. Al guardar, la sesión pasa a solo lectura y se abre la siguiente. |
-| 5. Vista 360° | `components/interdisciplinary/View360.jsx` | Panel lateral de solo lectura con objetivos, % y tendencia del paciente en las demás especialidades, última observación de cada área y notas compartidas. |
+| 5. Vista 360° | `components/interdisciplinary/View360.jsx`, `components/ui/Sheet.jsx` | Panel lateral deslizable (se abre con el botón **Vista 360°** de la barra superior o desde el menú lateral y se cierra con Esc, con la X o haciendo clic fuera) de solo lectura con objetivos, % y tendencia del paciente en las demás especialidades, última observación de cada área y notas compartidas. La ficha queda en una sola columna. |
 | 6. Nuevo ciclo | `components/cycle/NoCycleCard.jsx`, `NewCycleForm.jsx` | Tarjeta **Sin ciclo abierto** cuando la API responde 404 para la especialidad, y formulario (fecha de inicio, frecuencia) para abrir el siguiente ciclo de 12 sesiones; el mismo formulario aparece al completar el ciclo actual. |
 
 ## Estructura
@@ -144,7 +144,7 @@ src/
 └── components/
     ├── auth/      LoginScreen
     ├── cycle/     NoCycleCard, NewCycleForm
-    ├── ui/        Card, Badge, Button, ProgressBar, RingProgress, Sparkline, Avatar, Toast, StatusScreen
+    ├── ui/        Card, Badge, Button, ProgressBar, RingProgress, Sparkline, Avatar, Toast, StatusScreen, Sheet (panel lateral)
     ├── layout/    Sidebar, Topbar
     ├── header/    SessionHeader
     ├── objectives/ObjectivesPanel
@@ -195,6 +195,8 @@ El dashboard calcula en el navegador con `src/utils/progress.js`; el backend tie
 9. Cerrar un ciclo (guardando hasta la sesión 12, o con `POST /ciclos/{id}/cierre` desde Swagger) y abrir el siguiente
    desde el bloque *Ciclo completado* del historial o, tras recargar, desde la tarjeta *Sin ciclo abierto*: la ficha
    vuelve a *Sesión 1 de 12* sin objetivos.
+10. Abrir la **Vista 360°** con el botón de la barra superior (o la entrada del menú lateral), revisar el avance de
+    las demás especialidades y las notas compartidas, y cerrarla con Esc o haciendo clic fuera del panel.
 
 ## Siguiente hito
 

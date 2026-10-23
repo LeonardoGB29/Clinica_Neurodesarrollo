@@ -59,7 +59,7 @@ en la sesión 4 de 12. Con la misma clave: `cmendoza` (Lenguaje), `jsalazar` (F�
 1. Agregar un objetivo del banco o crear uno nuevo con **+**; al tercero, el selector se bloquea.
 2. Registrar aciertos/intentos, actividad y logro de la sesión 4 y **Guardar sesión**: pasa a solo lectura y se abre la 5.
 3. Revisar el dashboard (acumulado, última sesión, gráfico) y activar **Simular cierre de ciclo** para ver la escala GAS.
-4. Revisar la vista 360° con el avance de las demás especialidades y las notas compartidas.
+4. Abrir la **Vista 360°** (botón arriba a la derecha o entrada del menú lateral) para ver el avance de las demás especialidades y las notas compartidas; se cierra con Esc.
 5. **Generar Reporte PDF**.
 
 ## Pruebas del backend

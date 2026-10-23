@@ -63,7 +63,7 @@ function SessionBars({ series, totalSessions, currentSession, color }) {
   );
 }
 
-function ObjectiveProgressCard({ objective, index, sessions, cycle, gasEnabled }) {
+function ObjectiveProgressCard({ objective, index, sessions, cycle, gasEnabled, className = "" }) {
   const color = seriesColor(index);
   const accumulated = accumulatedProgress(sessions, objective.id);
   const last = lastScore(sessions, objective.id);
@@ -73,7 +73,7 @@ function ObjectiveProgressCard({ objective, index, sessions, cycle, gasEnabled }
   const series = scoreSeries(sessions, objective.id);
 
   return (
-    <article className="flex flex-col rounded-xl border border-slate-200 bg-white p-4">
+    <article className={`flex flex-col rounded-xl border border-slate-200 bg-white p-4 ${className}`}>
       <header className="flex items-start gap-2">
         <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
         <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-navy" title={objective.text}>
@@ -128,6 +128,13 @@ function ObjectiveProgressCard({ objective, index, sessions, cycle, gasEnabled }
   );
 }
 
+/** Las tarjetas ocupan todo el ancho disponible: tantas columnas como objetivos activos (máx. 3). */
+function gridColsFor(count) {
+  if (count <= 1) return "grid-cols-1";
+  if (count === 2) return "grid-cols-1 md:grid-cols-2";
+  return "grid-cols-1 md:grid-cols-2 xl:grid-cols-3";
+}
+
 function Switch({ checked, onChange, label }) {
   return (
     <label className="no-print inline-flex cursor-pointer select-none items-center gap-2 text-xs font-medium text-slate-600">
@@ -166,7 +173,7 @@ export default function ProgressDashboard({ objectives, sessions, cycle }) {
             </div>
           )}
 
-          <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          <div className={`grid gap-4 ${gridColsFor(objectives.length)}`}>
             {objectives.map((o, i) => (
               <ObjectiveProgressCard
                 key={o.id}
@@ -175,6 +182,7 @@ export default function ProgressDashboard({ objectives, sessions, cycle }) {
                 sessions={sessions}
                 cycle={cycle}
                 gasEnabled={gasEnabled}
+                className={objectives.length === 3 && i === 2 ? "md:col-span-2 xl:col-span-1" : ""}
               />
             ))}
           </div>

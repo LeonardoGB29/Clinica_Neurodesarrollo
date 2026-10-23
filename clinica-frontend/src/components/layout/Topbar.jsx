@@ -1,7 +1,7 @@
-import { Bell, ChevronRight, Menu, Search } from "lucide-react";
+import { Bell, ChevronRight, Menu, Orbit, Search } from "lucide-react";
 import Avatar from "../ui/Avatar";
 
-export default function Topbar({ professional, specialty, patient, onMenu }) {
+export default function Topbar({ professional, specialty, patient, onMenu, onOpen360 }) {
   return (
     <header className="no-print sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur lg:px-6">
       <button
@@ -31,6 +31,17 @@ export default function Topbar({ professional, specialty, patient, onMenu }) {
             aria-label="Buscar paciente"
           />
         </label>
+        {onOpen360 && (
+          <button
+            type="button"
+            onClick={onOpen360}
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-primary-200 bg-primary-50 px-3 text-xs font-semibold text-primary-700 transition hover:bg-primary-100 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-100"
+            title="Ver el progreso del paciente en las demás especialidades"
+          >
+            <Orbit size={15} />
+            <span className="hidden sm:inline">Vista 360°</span>
+          </button>
+        )}
         <button
           type="button"
           className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100"

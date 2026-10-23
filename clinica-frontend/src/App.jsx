@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { Orbit } from "lucide-react";
 import logo from "./assets/logo-horizontal.svg";
 import { API_URL, errorMessage } from "./api/client";
 import LoginScreen from "./components/auth/LoginScreen";
@@ -10,6 +11,7 @@ import View360 from "./components/interdisciplinary/View360";
 import Sidebar from "./components/layout/Sidebar";
 import Topbar from "./components/layout/Topbar";
 import ObjectivesPanel from "./components/objectives/ObjectivesPanel";
+import Sheet from "./components/ui/Sheet";
 import { ErrorScreen, LoadingScreen } from "./components/ui/StatusScreen";
 import { ToastStack, useToast } from "./components/ui/Toast";
 import { useAuth } from "./hooks/useAuth";
@@ -54,6 +56,10 @@ function ClinicalRecordPage({ session, onLogout, push }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [openingCycle, setOpeningCycle] = useState(false);
+  /** Vista 360° en un panel lateral deslizable, para no sobrecargar la ficha. */
+  const [view360Open, setView360Open] = useState(false);
+  const open360 = useCallback(() => setView360Open(true), []);
+  const close360 = useCallback(() => setView360Open(false), []);
 
   const notify = (result) => push(result.message, result.ok ? "success" : "error");
 
@@ -146,6 +152,7 @@ function ClinicalRecordPage({ session, onLogout, push }) {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         onLogout={onLogout}
+        onOpen360={open360}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -154,9 +161,10 @@ function ClinicalRecordPage({ session, onLogout, push }) {
           specialty={record.specialty}
           patient={record.patient}
           onMenu={() => setMenuOpen(true)}
+          onOpen360={open360}
         />
 
-        <main className="mx-auto w-full max-w-[1600px] flex-1 space-y-6 px-4 py-6 lg:px-6 print:max-w-none print:p-0">
+        <main className="mx-auto w-full max-w-[1360px] flex-1 space-y-6 px-4 py-6 lg:px-6 print:max-w-none print:p-0">
           {noCycle ? (
             <div className="mx-auto w-full max-w-5xl">
               <NoCycleCard
@@ -190,8 +198,7 @@ function ClinicalRecordPage({ session, onLogout, push }) {
                 onOpenNextCycle={focusNewCycleForm}
               />
 
-              <div className="grid grid-cols-1 gap-6 xl:grid-cols-3 print:block">
-                <div className="space-y-6 xl:col-span-2">
+              <div className="space-y-6">
                   <ObjectivesPanel
                     objectives={record.objectives}
                     availableFromBank={record.availableFromBank}
@@ -222,20 +229,6 @@ function ClinicalRecordPage({ session, onLogout, push }) {
                     onOpenCycle={handleOpenCycle}
                     openingCycle={openingCycle}
                   />
-                </div>
-
-                <aside className="xl:col-span-1 print:mt-6">
-                  <div className="scrollbar-thin xl:sticky xl:top-20 xl:-m-1 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto xl:p-1 print:static print:max-h-none print:overflow-visible">
-                    <View360
-                      otherSpecialties={record.otherSpecialties}
-                      specialties={record.specialties}
-                      currentSpecialty={record.specialty}
-                      objectives={record.objectives}
-                      sessions={record.sessions}
-                      sharedNotes={record.sharedNotes}
-                    />
-                  </div>
-                </aside>
               </div>
             </>
           )}
@@ -246,6 +239,25 @@ function ClinicalRecordPage({ session, onLogout, push }) {
           </footer>
         </main>
       </div>
+
+      {/* Vista 360° interdisciplinaria: panel lateral sobre la ficha (botón de la barra superior o menú) */}
+      <Sheet
+        open={view360Open}
+        onClose={close360}
+        title="Vista 360° interdisciplinaria"
+        subtitle={`${record.patient.fullName} · objetivos y progreso en las demás especialidades · solo lectura`}
+        icon={Orbit}
+      >
+        <View360
+          embedded
+          otherSpecialties={record.otherSpecialties ?? []}
+          specialties={record.specialties ?? {}}
+          currentSpecialty={record.specialty}
+          objectives={record.objectives ?? []}
+          sessions={record.sessions ?? []}
+          sharedNotes={record.sharedNotes ?? []}
+        />
+      </Sheet>
     </div>
   );
 }

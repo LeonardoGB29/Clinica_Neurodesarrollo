@@ -1,4 +1,4 @@
-import { CalendarDays, ChartColumn, ClipboardList, LifeBuoy, LogOut, Settings, Users, X } from "lucide-react";
+import { CalendarDays, ChartColumn, ClipboardList, LifeBuoy, LogOut, Orbit, Settings, Users, X } from "lucide-react";
 import logo from "../../assets/logo-horizontal.svg";
 import Avatar from "../ui/Avatar";
 
@@ -6,11 +6,12 @@ const NAV = [
   { label: "Agenda", icon: CalendarDays },
   { label: "Pacientes", icon: Users },
   { label: "Ficha de evolución", icon: ClipboardList, active: true },
+  { label: "Vista 360°", icon: Orbit, action: "open360" },
   { label: "Reportes", icon: ChartColumn },
   { label: "Configuración", icon: Settings },
 ];
 
-function SidebarContent({ professional, specialty, onClose, onLogout }) {
+function SidebarContent({ professional, specialty, onClose, onLogout, onOpen360 }) {
   return (
     <>
       <div className="flex items-start justify-between gap-2 border-b border-slate-100 px-5 py-5">
@@ -33,11 +34,17 @@ function SidebarContent({ professional, specialty, onClose, onLogout }) {
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4" aria-label="Navegación principal">
-        {NAV.map(({ label, icon: Icon, active }) => (
+        {NAV.map(({ label, icon: Icon, active, action }) => (
           <a
             key={label}
             href="#"
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.preventDefault();
+              if (action === "open360") {
+                onClose?.();
+                onOpen360?.();
+              }
+            }}
             aria-current={active ? "page" : undefined}
             className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
               active
@@ -84,12 +91,12 @@ function SidebarContent({ professional, specialty, onClose, onLogout }) {
   );
 }
 
-export default function Sidebar({ professional, specialty, open, onClose, onLogout }) {
+export default function Sidebar({ professional, specialty, open, onClose, onLogout, onOpen360 }) {
   return (
     <>
       {/* Escritorio */}
       <aside className="no-print sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
-        <SidebarContent professional={professional} specialty={specialty} onLogout={onLogout} />
+        <SidebarContent professional={professional} specialty={specialty} onLogout={onLogout} onOpen360={onOpen360} />
       </aside>
 
       {/* Móvil / tablet: cajón deslizable */}
@@ -97,7 +104,13 @@ export default function Sidebar({ professional, specialty, open, onClose, onLogo
         <div className="no-print fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-navy/40" onClick={onClose} aria-hidden="true" />
           <aside className="absolute left-0 top-0 flex h-full w-72 flex-col bg-white shadow-xl">
-            <SidebarContent professional={professional} specialty={specialty} onClose={onClose} onLogout={onLogout} />
+            <SidebarContent
+              professional={professional}
+              specialty={specialty}
+              onClose={onClose}
+              onLogout={onLogout}
+              onOpen360={onOpen360}
+            />
           </aside>
         </div>
       )}
