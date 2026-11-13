@@ -181,7 +181,7 @@ function ClinicalRecordPage({ session, onLogout, push }) {
               <div className="hidden items-center justify-between border-b border-slate-200 pb-3 print:flex">
                 <img src={logo} alt="Clínica San Juan de Dios" className="h-10 w-auto" />
                 <div className="text-right text-xs text-slate-500">
-                  <p className="font-semibold text-navy">Reporte de Ficha de Evolución · Centro de Neurodesarrollo</p>
+                  <p className="font-semibold text-navy">Reporte de Ficha de Evolución - Centro de Neurodesarrollo</p>
                   <p>Generado el {formatDate(todayIso())} por {record.professional.fullName}</p>
                 </div>
               </div>
