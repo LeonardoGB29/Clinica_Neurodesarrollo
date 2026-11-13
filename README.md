@@ -54,7 +54,7 @@ npm run dev
 Ingresar con **`mquispe` / `clinica2026`** (Terapia Ocupacional): se abre la ficha del paciente de demostración
 en la sesión 4 de 12. Con la misma clave: `cmendoza` (Lenguaje), `jsalazar` (Física), `acastillo` (Psicología).
 
-## Qué probar
+## Qué probar?
 
 1. Agregar un objetivo del banco o crear uno nuevo con **+**; al tercero, el selector se bloquea.
 2. Registrar aciertos/intentos, actividad y logro de la sesión 4 y **Guardar sesión**: pasa a solo lectura y se abre la 5.
